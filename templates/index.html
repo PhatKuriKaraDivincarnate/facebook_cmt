@@ -1,0 +1,45 @@
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <title>Phân Tích Cảm Xúc Facebook</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <h1>Phân tích cảm xúc bình luận Facebook</h1>
+    <form method="POST">
+      <input type="text" name="post_id" placeholder="Nhập Post ID Facebook" required><br>
+      <input type="text" name="access_token" placeholder="Nhập Access Token" required><br>
+      <button type="submit">Phân tích</button>
+    </form>
+
+    {% if positives or negatives %}
+    <h2>Kết quả</h2>
+    <canvas id="myChart" width="300" height="300"></canvas>
+    <script>
+      var ctx = document.getElementById('myChart').getContext('2d');
+      var myChart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+              labels: ['Tích cực', 'Tiêu cực'],
+              datasets: [{
+                  label: 'Phân bố cảm xúc',
+                  data: [{{ chart_data.positive }}, {{ chart_data.negative }}],
+                  backgroundColor: ['#36a2eb', '#ff6384']
+              }]
+          }
+      });
+    </script>
+    <div class="comment-box">
+      <h3>Bình luận tích cực</h3>
+      <ul>{% for c in positives %}<li>{{ c }}</li>{% endfor %}</ul>
+    </div>
+    <div class="comment-box">
+      <h3>Bình luận tiêu cực</h3>
+      <ul>{% for c in negatives %}<li>{{ c }}</li>{% endfor %}</ul>
+    </div>
+    {% endif %}
+  </body>
+</html>
